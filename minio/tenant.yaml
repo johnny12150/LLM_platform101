@@ -1,0 +1,45 @@
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: llm-minio
+  namespace: llm-platform
+spec:
+#  image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+  image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+  imagePullPolicy: IfNotPresent
+
+  ## Secret storing MINIO_ROOT_USER / MINIO_ROOT_PASSWORD
+  configuration:
+    name: llm-minio-secret
+
+  users:
+    - name: llm-minio-user
+
+  ## Enable MinIO + Console service exposure
+  serviceMetadata:
+    minioServiceAnnotations: { }
+    consoleServiceAnnotations: { }
+  requestAutoCert: false
+
+  ## One pool
+  pools:
+    - name: pool-0
+      servers: 2
+      volumesPerServer: 2
+      volumeClaimTemplate:
+        metadata: { }
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 30Gi
+          storageClassName: local-path
+
+  ## Mount path for volumes
+  mountPath: /export
+  subPath: ""
+
+  ## Expose MinIO & Console
+  features:
+    bucketDNS: false
