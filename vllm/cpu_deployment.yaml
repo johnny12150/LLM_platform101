@@ -56,12 +56,6 @@ spec:
           env:
             - name: HF_HOME
               value: /models
-#            - name: TRANSFORMERS_OFFLINE
-#              value: "1"
-#            - name: HF_HUB_OFFLINE
-#              value: "1"
-#            - name: VLLM_LOGGING_LEVEL
-#              value: "DEBUG"
           args:
             - "--model"
             - "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
@@ -70,8 +64,6 @@ spec:
             - "--max-model-len"
             - "2048"
             - "--disable-async-output-proc"
-#            - "--worker-cls"
-#            - "vllm.worker.cpu_worker.CPUWorker"
           ports:
             - containerPort: 8000
           resources:
