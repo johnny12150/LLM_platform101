@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n
+  namespace: llm-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      containers:
+        - name: n8n
+          image: n8nio/n8n:2.1.4
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              # 1. Wait a moment for any internal init logic
+              sleep 2; 
+              
+              # 2. Import the workflow from the read-only ConfigMap mount
+              n8n import:credentials --input=/tmp/creds/my-credentials.json;
+              n8n import:workflow --input=/tmp/import/my-workflow.json;
+              
+              # 3. Start the n8n process normally
+              n8n start;
+          ports:
+            - containerPort: 5678
+          env:
+            - name: N8N_PORT
+              value: "5678"
+            - name: WEBHOOK_URL
+              value: "http://localhost:32001/"
+            - name: N8N_ENCRYPTION_KEY
+              value: "a-very-secret-random-string"
+          volumeMounts:
+            - name: workflow-volume
+              mountPath: /tmp/import
+              readOnly: true
+            - name: creds-volume
+              mountPath: /tmp/creds
+#            - name: n8n-storage
+#              mountPath: /home/node/.n8n
+
+      volumes:
+        - name: workflow-volume
+          configMap:
+            name: n8n-workflows
+        - name: creds-volume
+          secret:
+            secretName: n8n-credentials
+#        - name: n8n-storage
+#          persistentVolumeClaim:
+#            claimName: n8n-pvc
