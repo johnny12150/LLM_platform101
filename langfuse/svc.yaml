@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: langfuse-nodeport
+  namespace: llm-platform
+spec:
+  selector:
+    app: web
+    app.kubernetes.io/instance: langfuse
+    app.kubernetes.io/name: langfuse
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 32002

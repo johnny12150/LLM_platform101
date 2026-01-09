@@ -1,0 +1,24 @@
+langfuse:
+  # Generate these secrets (e.g., using: openssl rand -hex 32)
+  salt:
+    value: "your-random-salt-here"
+  nextauth:
+    url: "http://localhost:32002"
+    secret:
+      value: "your-nextauth-secret-here"
+  encryptionKey:
+      value: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"  # openssl rand -hex 32
+
+# Dependencies
+postgresql:
+  auth:
+    password: "change-me-to-a-strong-password"
+redis:
+  auth:
+    password: "change-me-to-a-strong-password"
+clickhouse:
+  auth:
+    password: "change-me-to-a-strong-password"
+s3:
+  auth:
+    rootPassword: "change-me-to-a-strong-password"
